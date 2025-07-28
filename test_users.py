@@ -1,13 +1,13 @@
 import requests
 import utils
 import pytest
-from confest import base_url, headers
+
 def test_existing_list_users(base_url, headers):
     page = 2
     data = requests.get(f"{base_url}/users?page={page}", headers=headers)
     utils.assert_status_ok(data)
     assert data.json()["page"] == page
-    if page < len(data.json()["data"]):
+    if page < data.json()["total_pages"]:
         assert len(data.json()["data"]) == data.json()["per_page"]
     else:
         assert len(data.json()["data"]) <= data.json()["per_page"]

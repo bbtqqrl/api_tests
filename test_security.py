@@ -1,6 +1,5 @@
 import pytest
 import requests
-from confest import base_url, headers
 
 
 def test_sql_injection_email(base_url, headers):
@@ -16,8 +15,7 @@ def test_sql_injection_email(base_url, headers):
 def test_xss_injection_name(base_url, headers):
     payload = {"name": "<script>alert(1)</script>", "job": "hacker"}
     response = requests.post(f"{base_url}/users", json=payload, headers=headers)
-    data = response.json()
-    print(response.text)  
+    data = response.json() 
 
     assert "<script>" not in data.get("name", ""), "XSS not sanitized"
 
@@ -28,8 +26,7 @@ def test_xss_injection_name(base_url, headers):
 ])
 def test_extreme_input_lengths(base_url, headers, name, job):
     payload = {"name": name, "job": job}
-    response = requests.post(f"{base_url}/users", json=payload, headers=headers)
-    print(response.text)  
+    response = requests.post(f"{base_url}/users", json=payload, headers=headers) 
     assert response.status_code in [201, 400]
 
 @pytest.mark.xfail(reason="Reqres.in does not sanitize invalid data types")
@@ -39,7 +36,6 @@ def test_extreme_input_lengths(base_url, headers, name, job):
 ])
 def test_invalid_data_types(base_url, headers, name, job):
     payload = {"name": name, "job": job}
-    response = requests.post(f"{base_url}/users", json=payload, headers=headers)
-    print(response.text)  
+    response = requests.post(f"{base_url}/users", json=payload, headers=headers) 
 
     assert response.status_code in [400, 422]
